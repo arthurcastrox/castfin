@@ -1,6 +1,6 @@
 # CastFin
 
-Controle financeiro simples, feito com **Python + Flask + SQLite**.
+Controle financeiro pessoal e simples, feito com **Python + Flask + SQLite**.
 
 > 🚧 **Projeto em desenvolvimento.** Este é um projeto de estudo, construído aos poucos. Hoje existe apenas o dashboard mensal funcional; o restante está planejado e pode mudar.
 
@@ -13,7 +13,6 @@ Controle financeiro simples, feito com **Python + Flask + SQLite**.
 | Navegação entre meses | ✅ Funcional |
 | Cadastro e exclusão de lançamentos (alimenta o dashboard) | ✅ Funcional |
 | Edição de lançamentos | ⏳ Planejado |
-| Finanças compartilhadas (duas pessoas) | ⏳ Planejado |
 | Orçamento por categoria | ⏳ Planejado |
 
 ## Tecnologias

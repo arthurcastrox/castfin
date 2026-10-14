@@ -25,14 +25,6 @@
       <input type="date" name="data" required value="{{ form.data }}">
     </label>
 
-    <label>Pessoa
-      <select name="pessoa">
-        {% for p in pessoas %}
-          <option value="{{ p }}" {{ 'selected' if p == form.pessoa }}>{{ p }}</option>
-        {% endfor %}
-      </select>
-    </label>
-
     <div class="botoes">
       <button class="btn" type="submit">Salvar</button>
       <a class="btn secundario" href="{{ url_for('dashboard') }}">Cancelar</a>

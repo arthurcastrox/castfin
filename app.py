@@ -16,7 +16,6 @@ CATEGORIAS = {
     "despesa": ["Alimentação", "Transporte", "Moradia", "Saúde", "Lazer", "Educação", "Outras"],
     "receita": ["Salário", "Freelance", "Investimentos", "Outras"],
 }
-PESSOAS = ["Eu"]  # futuramente: adicionar a segunda pessoa para finanças compartilhadas
 
 MESES = ["janeiro", "fevereiro", "março", "abril", "maio", "junho",
          "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"]
@@ -47,8 +46,7 @@ def init_db():
                 valor_cents INTEGER NOT NULL CHECK (valor_cents > 0),
                 tipo        TEXT    NOT NULL CHECK (tipo IN ('receita', 'despesa')),
                 categoria   TEXT    NOT NULL,
-                data        TEXT    NOT NULL,          -- formato AAAA-MM-DD
-                pessoa      TEXT    NOT NULL DEFAULT 'Eu'
+                data        TEXT    NOT NULL           -- formato AAAA-MM-DD
             )
             """
         )
@@ -138,10 +136,10 @@ def dashboard():
 
 @app.route("/lancamentos/novo", methods=["GET", "POST"])
 def novo_lancamento():
-    form = {"tipo": "despesa", "data": date.today().isoformat(), "pessoa": PESSOAS[0]}
+    form = {"tipo": "despesa", "data": date.today().isoformat()}
     if request.method == "POST":
         form = {k: request.form.get(k, "").strip() for k in
-                ("tipo", "descricao", "valor", "categoria", "data", "pessoa")}
+                ("tipo", "descricao", "valor", "categoria", "data")}
         erro = None
         try:
             if form["tipo"] not in CATEGORIAS:
@@ -150,8 +148,6 @@ def novo_lancamento():
                 raise ValueError("Informe a descrição.")
             if form["categoria"] not in CATEGORIAS[form["tipo"]]:
                 raise ValueError("Escolha uma categoria válida.")
-            if form["pessoa"] not in PESSOAS:
-                raise ValueError("Pessoa inválida.")
             try:
                 datetime.strptime(form["data"], "%Y-%m-%d")
             except ValueError:
@@ -165,15 +161,15 @@ def novo_lancamento():
         else:
             db = get_db()
             db.execute(
-                "INSERT INTO transacoes (descricao, valor_cents, tipo, categoria, data, pessoa) "
-                "VALUES (?, ?, ?, ?, ?, ?)",
-                (form["descricao"][:120], cents, form["tipo"], form["categoria"], form["data"], form["pessoa"]),
+                "INSERT INTO transacoes (descricao, valor_cents, tipo, categoria, data) "
+                "VALUES (?, ?, ?, ?, ?)",
+                (form["descricao"][:120], cents, form["tipo"], form["categoria"], form["data"]),
             )
             db.commit()
             flash("Lançamento salvo!", "ok")
             return redirect(url_for("dashboard", mes=form["data"][:7]))
 
-    return render_template("form.html", form=form, categorias=CATEGORIAS, pessoas=PESSOAS)
+    return render_template("form.html", form=form, categorias=CATEGORIAS)
 
 
 @app.route("/lancamentos/<int:lancamento_id>/excluir", methods=["POST"])
