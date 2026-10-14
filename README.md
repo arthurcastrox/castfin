@@ -40,7 +40,7 @@ O **CastFin** é uma aplicação web leve e intuitiva de controle financeiro pes
 ### Planejadas (⏳)
 - [ ] Orçamento limite por categoria.
 - [ ] Gráficos analíticos de fluxo de caixa anual.
-- [ ] Categorias editáveis pela interface (hoje ficam em ).
+- [ ] Categorias editáveis pela interface (hoje ficam em `app.py`).
 
 ---
 
