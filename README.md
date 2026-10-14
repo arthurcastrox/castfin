@@ -23,10 +23,22 @@ Controle financeiro pessoal e simples, feito com **Python + Flask + SQLite**.
 
 ## Como executar
 
-```bash
+Abra o terminal **dentro da pasta do projeto** (a que contém o `app.py`).
+
+**Windows (cmd ou PowerShell):**
+
+```
 python -m venv .venv
-# Windows:   .venv\Scripts\activate
-# Linux/Mac: source .venv/bin/activate
+.venv\Scripts\activate
+pip install -r requirements.txt
+python app.py
+```
+
+**Linux/Mac:**
+
+```
+python3 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 python app.py
 ```
