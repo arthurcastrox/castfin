@@ -4,6 +4,10 @@ Controle financeiro pessoal e simples, feito com **Python + Flask + SQLite**.
 
 > 🚧 **Projeto em desenvolvimento.** Este é um projeto de estudo, construído aos poucos. Hoje existe apenas o dashboard mensal funcional; o restante está planejado e pode mudar.
 
+## Dashboard
+
+![Dashboard do CastFin com receitas, despesas, saldo, despesas por categoria e histórico](docs/dashboard.png)
+
 ## Status atual
 
 | Funcionalidade | Situação |
@@ -54,6 +58,7 @@ castfin/
 ├── app.py              # Flask + regras financeiras
 ├── requirements.txt
 ├── run_windows.bat
+├── docs/dashboard.png  # captura de tela
 ├── templates/
 │   ├── base.html
 │   ├── dashboard.html
