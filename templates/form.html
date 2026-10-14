@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block titulo %}Novo lançamento · CastFin{% endblock %}
+{% block conteudo %}
+<section class="painel">
+  <h1>Novo lançamento</h1>
+  <form method="post" class="formulario">
+    <div class="tipo">
+      <label><input type="radio" name="tipo" value="despesa" {{ 'checked' if form.tipo != 'receita' }}> Despesa</label>
+      <label><input type="radio" name="tipo" value="receita" {{ 'checked' if form.tipo == 'receita' }}> Receita</label>
+    </div>
+
+    <label>Descrição
+      <input type="text" name="descricao" maxlength="120" required value="{{ form.descricao or '' }}">
+    </label>
+
+    <label>Valor (R$)
+      <input type="text" name="valor" inputmode="decimal" placeholder="0,00" required value="{{ form.valor or '' }}">
+    </label>
+
+    <label>Categoria
+      <select name="categoria" id="categoria" required></select>
+    </label>
+
+    <label>Data
+      <input type="date" name="data" required value="{{ form.data }}">
+    </label>
+
+    <label>Pessoa
+      <select name="pessoa">
+        {% for p in pessoas %}
+          <option value="{{ p }}" {{ 'selected' if p == form.pessoa }}>{{ p }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <div class="botoes">
+      <button class="btn" type="submit">Salvar</button>
+      <a class="btn secundario" href="{{ url_for('dashboard') }}">Cancelar</a>
+    </div>
+  </form>
+</section>
+
+<script>
+  const categorias = {{ categorias | tojson }};
+  const selecionada = {{ (form.categoria or '') | tojson }};
+  const select = document.getElementById("categoria");
+
+  function preencher() {
+    const tipo = document.querySelector('input[name="tipo"]:checked').value;
+    select.innerHTML = "";
+    categorias[tipo].forEach(nome => {
+      const opt = new Option(nome, nome, false, nome === selecionada);
+      select.add(opt);
+    });
+  }
+  document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener("change", preencher));
+  preencher();
+</script>
+{% endblock %}

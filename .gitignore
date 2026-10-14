@@ -1,0 +1,5 @@
+.venv/
+__pycache__/
+*.pyc
+castfin.db
+.DS_Store

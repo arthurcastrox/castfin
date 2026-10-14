@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block conteudo %}
+<nav class="mes">
+  <a href="{{ url_for('dashboard', mes=mes_anterior) }}" aria-label="Mês anterior">&larr;</a>
+  <h1>{{ mes_titulo }}</h1>
+  <a href="{{ url_for('dashboard', mes=mes_seguinte) }}" aria-label="Próximo mês">&rarr;</a>
+</nav>
+
+<section class="cards">
+  <div class="card">
+    <span>Receitas</span>
+    <strong class="positivo">{{ receitas | brl }}</strong>
+  </div>
+  <div class="card">
+    <span>Despesas</span>
+    <strong class="negativo">{{ despesas | brl }}</strong>
+  </div>
+  <div class="card destaque">
+    <span>Saldo do mês</span>
+    <strong class="{{ 'positivo' if saldo >= 0 else 'negativo' }}">{{ saldo | brl }}</strong>
+  </div>
+</section>
+
+<section class="painel">
+  <h2>Despesas por categoria</h2>
+  {% if por_categoria %}
+    <ul class="categorias">
+      {% for c in por_categoria %}
+        {% set pct = (c.total / despesas * 100) | round(0) | int %}
+        <li>
+          <div class="linha"><span>{{ c.categoria }}</span><span>{{ c.total | brl }} · {{ pct }}%</span></div>
+          <div class="barra"><div style="width: {{ pct }}%"></div></div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="vazio">Nenhuma despesa neste mês.</p>
+  {% endif %}
+</section>
+
+<section class="painel">
+  <h2>Histórico</h2>
+  {% if lancamentos %}
+    <ul class="historico">
+      {% for l in lancamentos %}
+        <li>
+          <div class="info">
+            <strong>{{ l.descricao }}</strong>
+            <small>{{ l.data | data_br }} · {{ l.categoria }} · {{ l.pessoa }}</small>
+          </div>
+          <div class="acoes">
+            <span class="{{ 'positivo' if l.tipo == 'receita' else 'negativo' }}">
+              {{ '+' if l.tipo == 'receita' else '-' }} {{ l.valor_cents | brl }}
+            </span>
+            <form method="post" action="{{ url_for('excluir_lancamento', lancamento_id=l.id) }}"
+                  onsubmit="return confirm('Excluir este lançamento?');">
+              <button class="excluir" type="submit" aria-label="Excluir">&times;</button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="vazio">Nenhum lançamento neste mês. <a href="{{ url_for('novo_lancamento') }}">Adicione o primeiro</a>.</p>
+  {% endif %}
+</section>
+{% endblock %}
