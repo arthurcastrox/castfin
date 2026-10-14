@@ -1,35 +1,60 @@
-# CastFin
+# 🪙 CastFin
 
-Controle financeiro pessoal e simples, feito com **Python + Flask + SQLite**.
+[![Python](https://img.shields.io/badge/Python-3.8%2B-blue.svg)](https://www.python.org/)
+[![Flask](https://img.shields.io/badge/Flask-Framework-lightgrey.svg)](https://flask.palletsprojects.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-Database-green.svg)](https://www.sqlite.org/)
 
-> 🚧 **Projeto em desenvolvimento.** Este é um projeto de estudo, construído aos poucos. Hoje existe apenas o dashboard mensal funcional; o restante está planejado e pode mudar.
+O **CastFin** é uma aplicação web leve e intuitiva de controle financeiro pessoal, desenvolvida com foco em simplicidade usando **Python**, **Flask** e **SQLite**.
 
-## Dashboard
+> 🚧 **Projeto em desenvolvimento.** Este é um projeto de estudo, construído aos poucos. O restante do que está planejado pode mudar.
 
-![Dashboard do CastFin com receitas, despesas, saldo, despesas por categoria e histórico](docs/dashboard.png)
+---
 
-## Status atual
+## 📸 Pré-visualização do Sistema
 
-| Funcionalidade | Situação |
-| --- | --- |
-| Dashboard mensal (receitas, despesas e saldo) | ✅ Funcional |
-| Despesas por categoria e histórico do mês | ✅ Funcional |
-| Navegação entre meses | ✅ Funcional |
-| Cadastro e exclusão de lançamentos (alimenta o dashboard) | ✅ Funcional |
-| Edição de lançamentos | ⏳ Planejado |
-| Orçamento por categoria | ⏳ Planejado |
+<div align="center">
+  <h3>Dashboard Mensal</h3>
+  <img src="docs/dashboard.png" alt="Dashboard do CastFin" width="90%" />
 
-## Tecnologias
+  <br/><br/>
 
-- Python + Flask (lógica da aplicação)
-- HTML + CSS (interface responsiva)
-- SQLite (banco local, criado automaticamente)
+  <h3>Tela de Novo Lançamento</h3>
+  <img src="docs/form.png" alt="Formulário de cadastro do CastFin" width="90%" />
+</div>
 
-## Como executar
+---
 
-Abra o terminal **dentro da pasta do projeto** (a que contém o `app.py`).
+## ✨ Funcionalidades
 
-**Windows (cmd ou PowerShell):**
+### Atualmente implementadas (✅)
+- **Dashboard financeiro:** visualização consolidada de receitas, despesas e saldo do mês.
+- **Despesas por categoria:** acompanhamento percentual e visual com barras de progresso.
+- **Navegação temporal:** alterne entre os meses para conferir o histórico passado.
+- **Gestão de lançamentos:** cadastro e exclusão de receitas e despesas, com atualização automática do saldo.
+
+### Planejadas (⏳)
+- [ ] Edição de lançamentos existentes.
+- [ ] Orçamento limite por categoria.
+- [ ] Gráficos analíticos de fluxo de caixa anual.
+
+---
+
+## 🛠️ Tecnologias utilizadas
+
+- **Backend:** Python 3 com [Flask](https://flask.palletsprojects.com/)
+- **Banco de dados:** SQLite (criado automaticamente)
+- **Frontend:** HTML5 e CSS3 responsivo, com componentes em cards
+
+---
+
+## 🚀 Como executar o projeto
+
+Certifique-se de ter o **Python** instalado antes de prosseguir.
+
+1. Clone o repositório ou baixe os arquivos do projeto.
+2. Abra o terminal **na pasta raiz do projeto** (onde está o arquivo `app.py`).
+
+### No Windows (CMD ou PowerShell)
 
 ```
 python -m venv .venv
@@ -38,7 +63,9 @@ pip install -r requirements.txt
 python app.py
 ```
 
-**Linux/Mac:**
+*Dica: você também pode iniciar o sistema dando dois cliques em `run_windows.bat`. Se o Windows bloquear o arquivo baixado, use os comandos acima.*
+
+### No Linux / macOS
 
 ```
 python3 -m venv .venv
@@ -47,31 +74,41 @@ pip install -r requirements.txt
 python app.py
 ```
 
-Abra http://127.0.0.1:5000 no navegador. O arquivo `castfin.db` é criado na primeira execução.
+3. Com o servidor rodando, abra o navegador em **http://127.0.0.1:5000**
 
-No Windows, também é possível dar dois cliques em `run_windows.bat`. Se o Windows bloquear o arquivo baixado, use os comandos acima no terminal.
+*O banco de dados local `castfin.db` é gerado automaticamente na primeira execução.*
 
-## Estrutura
+---
 
-```
+## 📂 Estrutura de diretórios
+
+```text
 castfin/
-├── app.py              # Flask + regras financeiras
-├── requirements.txt
-├── run_windows.bat
-├── docs/dashboard.png  # captura de tela
-├── templates/
+├── app.py                  # Lógica da aplicação e rotas Flask
+├── requirements.txt        # Dependências do projeto
+├── run_windows.bat         # Execução rápida no Windows
+├── docs/
+│   ├── dashboard.png       # Captura de tela do dashboard
+│   └── form.png            # Captura de tela do formulário
+├── templates/              # Páginas HTML (Jinja2)
 │   ├── base.html
 │   ├── dashboard.html
 │   └── form.html
-└── static/css/style.css
+└── static/
+    └── css/
+        └── style.css       # Estilos da interface
 ```
 
-## Decisões técnicas
+---
 
-- Valores guardados em **centavos (inteiros)** para evitar erros de arredondamento.
-- Datas no formato `AAAA-MM-DD`, exibidas como `DD/MM/AAAA`.
-- Consultas SQL parametrizadas.
+## ⚙️ Decisões técnicas
 
-## Aviso
+- **Precisão monetária:** os valores são armazenados como **inteiros (centavos)**, evitando erros de arredondamento de ponto flutuante.
+- **Padronização de datas:** gravadas no formato `AAAA-MM-DD` e exibidas como `DD/MM/AAAA`.
+- **Segurança de consultas:** consultas SQL parametrizadas, que evitam *SQL Injection*.
 
-A `secret_key` em `app.py` é apenas de desenvolvimento. Não use este projeto em produção como está.
+---
+
+## ⚠️ Aviso de segurança
+
+A `secret_key` em `app.py` serve apenas para desenvolvimento local. **Não use essa configuração em produção.**
