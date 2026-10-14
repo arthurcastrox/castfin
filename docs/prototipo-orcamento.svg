@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 520" font-family="Segoe UI, Arial, sans-serif">
+  <rect width="800" height="520" fill="#f4f6f8"/>
+
+  <!-- Header -->
+  <rect width="800" height="60" fill="#1e2a38"/>
+  <text x="30" y="38" font-size="22" font-weight="bold" fill="#ffffff">🪙 CastFin</text>
+  <text x="520" y="37" font-size="14" fill="#cfd8e3">Dashboard</text>
+  <text x="610" y="37" font-size="14" fill="#cfd8e3">Lançamentos</text>
+  <text x="710" y="37" font-size="14" font-weight="bold" fill="#ffffff">Orçamento</text>
+  <rect x="705" y="45" width="75" height="3" fill="#4cc38a"/>
+
+  <!-- Title -->
+  <text x="30" y="105" font-size="22" font-weight="bold" fill="#1e2a38">Orçamento de Outubro</text>
+  <text x="30" y="128" font-size="13" fill="#6b7a8c">Defina limites por categoria e acompanhe seus gastos</text>
+  <rect x="610" y="82" width="160" height="40" rx="8" fill="#4cc38a"/>
+  <text x="690" y="108" font-size="14" font-weight="bold" fill="#ffffff" text-anchor="middle">+ Novo limite</text>
+
+  <!-- Summary card -->
+  <rect x="30" y="145" width="740" height="80" rx="12" fill="#ffffff" stroke="#e1e6ec"/>
+  <text x="55" y="175" font-size="12" fill="#6b7a8c">LIMITE TOTAL</text>
+  <text x="55" y="204" font-size="22" font-weight="bold" fill="#1e2a38">R$ 3.000,00</text>
+  <text x="300" y="175" font-size="12" fill="#6b7a8c">GASTO ATÉ AGORA</text>
+  <text x="300" y="204" font-size="22" font-weight="bold" fill="#e0a100">R$ 2.140,00</text>
+  <text x="550" y="175" font-size="12" fill="#6b7a8c">DISPONÍVEL</text>
+  <text x="550" y="204" font-size="22" font-weight="bold" fill="#2e9e6b">R$ 860,00</text>
+
+  <!-- Category 1 (green) -->
+  <rect x="30" y="245" width="740" height="62" rx="12" fill="#ffffff" stroke="#e1e6ec"/>
+  <text x="55" y="272" font-size="15" font-weight="bold" fill="#1e2a38">🍔 Alimentação</text>
+  <text x="745" y="272" font-size="13" fill="#6b7a8c" text-anchor="end">R$ 620 de R$ 1.000 (62%)</text>
+  <rect x="55" y="284" width="690" height="10" rx="5" fill="#e8edf2"/>
+  <rect x="55" y="284" width="428" height="10" rx="5" fill="#4cc38a"/>
+
+  <!-- Category 2 (yellow) -->
+  <rect x="30" y="319" width="740" height="62" rx="12" fill="#ffffff" stroke="#e1e6ec"/>
+  <text x="55" y="346" font-size="15" font-weight="bold" fill="#1e2a38">🚗 Transporte</text>
+  <text x="745" y="346" font-size="13" fill="#6b7a8c" text-anchor="end">R$ 420 de R$ 500 (84%)</text>
+  <rect x="55" y="358" width="690" height="10" rx="5" fill="#e8edf2"/>
+  <rect x="55" y="358" width="580" height="10" rx="5" fill="#f2b705"/>
+
+  <!-- Category 3 (red) -->
+  <rect x="30" y="393" width="740" height="62" rx="12" fill="#ffffff" stroke="#e1e6ec"/>
+  <text x="55" y="420" font-size="15" font-weight="bold" fill="#1e2a38">🎮 Lazer</text>
+  <text x="745" y="420" font-size="13" fill="#d64545" text-anchor="end">R$ 600 de R$ 500 (120%) ⚠ limite excedido</text>
+  <rect x="55" y="432" width="690" height="10" rx="5" fill="#e8edf2"/>
+  <rect x="55" y="432" width="690" height="10" rx="5" fill="#d64545"/>
+
+  <!-- Footer note -->
+  <text x="400" y="490" font-size="12" fill="#8a97a8" text-anchor="middle">Protótipo – tela planejada para o ciclo 4 (não implementada)</text>
+</svg>
