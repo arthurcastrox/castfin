@@ -3,19 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
   <title>{% block titulo %}CastFin{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
   <header class="topo">
-    <a class="logo" href="{{ url_for('dashboard') }}">Cast<span>Fin</span></a>
-    <a class="btn" href="{{ url_for('novo_lancamento') }}">+ Novo lançamento</a>
+    <div class="topo-conteudo">
+      <a class="logo" href="{{ url_for('dashboard') }}" aria-label="CastFin, página inicial">
+        <span class="logo-marca" aria-hidden="true">C</span>
+        <span class="logo-nome">Cast<span>Fin</span></span>
+      </a>
+      {% block acoes_topo %}
+        <a class="btn" href="{{ url_for('novo_lancamento') }}">
+          <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          Novo lançamento
+        </a>
+      {% endblock %}
+    </div>
   </header>
 
   <main class="container">
     {% with mensagens = get_flashed_messages(with_categories=true) %}
       {% for tipo, texto in mensagens %}
-        <div class="aviso {{ tipo }}">{{ texto }}</div>
+        <div class="aviso {{ tipo }}" role="status">{{ texto }}</div>
       {% endfor %}
     {% endwith %}
     {% block conteudo %}{% endblock %}

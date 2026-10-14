@@ -1,67 +1,221 @@
 {% extends "base.html" %}
+{% block titulo %}{{ mes_titulo }} · CastFin{% endblock %}
+
+{% block acoes_topo %}
+  <div class="topo-acoes">
+    <a class="btn secundario" href="{{ url_for('exportar_csv', mes=mes) }}" title="Baixar os lançamentos do mês em planilha">
+      <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M10 3v9m0 0-3.5-3.5M10 12l3.5-3.5M4 15h12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="so-desktop">Exportar</span>
+    </a>
+    <a class="btn" href="{{ url_for('novo_lancamento') }}">
+      <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      Novo lançamento
+    </a>
+  </div>
+{% endblock %}
+
 {% block conteudo %}
-<nav class="mes">
-  <a href="{{ url_for('dashboard', mes=mes_anterior) }}" aria-label="Mês anterior">&larr;</a>
+{# ---------- Mês ---------- #}
+<nav class="mes" aria-label="Escolher mês">
+  <a class="mes-seta" href="{{ url_for('dashboard', mes=mes_anterior) }}" aria-label="Mês anterior">
+    <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="M12 4 6 10l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
   <h1>{{ mes_titulo }}</h1>
-  <a href="{{ url_for('dashboard', mes=mes_seguinte) }}" aria-label="Próximo mês">&rarr;</a>
+  {% if not eh_mes_atual %}
+    <a class="mes-hoje" href="{{ url_for('dashboard') }}">Ir para o mês atual</a>
+  {% endif %}
+  <a class="mes-seta" href="{{ url_for('dashboard', mes=mes_seguinte) }}" aria-label="Próximo mês">
+    <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true"><path d="m8 4 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </a>
 </nav>
 
-<section class="cards">
-  <div class="card">
-    <span>Receitas</span>
-    <strong class="positivo">{{ receitas | brl }}</strong>
+{# ---------- Saldo ---------- #}
+<section class="hero" aria-labelledby="hero-titulo">
+  <div class="hero-saldo">
+    <h2 id="hero-titulo">Saldo do mês</h2>
+    <p class="hero-valor {{ 'pos' if saldo >= 0 else 'neg' }}">{{ saldo | brl }}</p>
+    <p class="hero-frase">
+      {% if receitas == 0 and despesas == 0 %}
+        Nenhum lançamento neste mês ainda.
+      {% elif receitas == 0 %}
+        Há despesas, mas nenhuma receita registrada.
+      {% elif saldo >= 0 %}
+        Você guardou <strong>{{ taxa_poupanca }}%</strong> do que recebeu.
+      {% else %}
+        Você gastou <strong>{{ (despesas / receitas * 100) | round | int }}%</strong> do que recebeu.
+      {% endif %}
+      {% if var_saldo.seta %}
+        <span class="chip {{ var_saldo.classe }}">{{ var_saldo.seta }} {{ var_saldo.texto }}</span>
+      {% endif %}
+    </p>
   </div>
-  <div class="card">
-    <span>Despesas</span>
-    <strong class="negativo">{{ despesas | brl }}</strong>
-  </div>
-  <div class="card destaque">
-    <span>Saldo do mês</span>
-    <strong class="{{ 'positivo' if saldo >= 0 else 'negativo' }}">{{ saldo | brl }}</strong>
+
+  <div class="hero-fluxo">
+    {% set uso = ((despesas / receitas * 100) if receitas else (100 if despesas else 0)) %}
+    <div class="fluxo-barra" role="img"
+         aria-label="{{ despesas | brl }} de despesas para {{ receitas | brl }} de receitas">
+      <div class="fluxo-gasto {{ 'estourou' if uso > 100 }}" style="width: {{ [uso, 100] | min | round(1) }}%"></div>
+    </div>
+    <div class="fluxo-legenda">
+      <div><span class="ponto gasto"></span>Despesas <strong>{{ despesas | brl }}</strong></div>
+      <div><span class="ponto sobra"></span>Receitas <strong>{{ receitas | brl }}</strong></div>
+    </div>
   </div>
 </section>
 
-<section class="painel">
-  <h2>Despesas por categoria</h2>
-  {% if por_categoria %}
-    <ul class="categorias">
-      {% for c in por_categoria %}
-        {% set pct = (c.total / despesas * 100) | round(0) | int %}
-        <li>
-          <div class="linha"><span>{{ c.categoria }}</span><span>{{ c.total | brl }} · {{ pct }}%</span></div>
-          <div class="barra"><div style="width: {{ pct }}%"></div></div>
-        </li>
+{# ---------- Indicadores ---------- #}
+<section class="indicadores" aria-label="Indicadores do mês">
+  <div class="indicador">
+    <span class="rotulo">Receitas</span>
+    <strong class="valor positivo">{{ receitas | brl }}</strong>
+    <span class="delta {{ var_receitas.classe }}">{{ var_receitas.seta }} {{ var_receitas.texto }}</span>
+  </div>
+  <div class="indicador">
+    <span class="rotulo">Despesas</span>
+    <strong class="valor negativo">{{ despesas | brl }}</strong>
+    <span class="delta {{ var_despesas.classe }}">{{ var_despesas.seta }} {{ var_despesas.texto }}</span>
+  </div>
+  <div class="indicador">
+    <span class="rotulo">Taxa de poupança</span>
+    <strong class="valor">{{ (taxa_poupanca ~ '%') if taxa_poupanca is not none else '—' }}</strong>
+    <span class="delta neutro">{{ 'parte da receita que sobrou' if taxa_poupanca is not none else 'precisa de uma receita no mês' }}</span>
+  </div>
+  <div class="indicador">
+    <span class="rotulo">Gasto médio por dia</span>
+    <strong class="valor">{{ media_diaria | brl }}</strong>
+    <span class="delta neutro">{{ 'até hoje' if eh_mes_atual else 'no mês todo' }}</span>
+  </div>
+</section>
+
+{# ---------- Gráficos ---------- #}
+<div class="grade-2">
+  <section class="painel" aria-labelledby="evolucao-titulo">
+    <div class="painel-topo">
+      <h2 id="evolucao-titulo">Evolução nos últimos {{ serie | length }} meses</h2>
+      <div class="legenda">
+        <span><i class="ponto sobra"></i>Receitas</span>
+        <span><i class="ponto gasto"></i>Despesas</span>
+      </div>
+    </div>
+    <div class="evolucao">
+      {% for s in serie %}
+        <a class="coluna {{ 'atual' if s.atual }}" href="{{ url_for('dashboard', mes=s.mes) }}"
+           title="{{ s.rotulo }}: receitas {{ s.receita | brl }}, despesas {{ s.despesa | brl }}">
+          <div class="colunas-barras">
+            <div class="barra-v receita" style="height: {{ s.h_receita }}%"></div>
+            <div class="barra-v despesa" style="height: {{ s.h_despesa }}%"></div>
+          </div>
+          <span class="coluna-rotulo">{{ s.rotulo }}</span>
+        </a>
       {% endfor %}
-    </ul>
-  {% else %}
-    <p class="vazio">Nenhuma despesa neste mês.</p>
-  {% endif %}
-</section>
+    </div>
+  </section>
 
-<section class="painel">
-  <h2>Histórico</h2>
+  <section class="painel" aria-labelledby="cat-titulo">
+    <div class="painel-topo"><h2 id="cat-titulo">Para onde foi o dinheiro</h2></div>
+    {% if por_categoria %}
+      <div class="categorias-corpo">
+        <div class="anel" style="background: {{ anel }}" role="img"
+             aria-label="Despesas por categoria">
+          <div class="anel-centro"><span>Total</span><strong>{{ despesas | brl_curto }}</strong></div>
+        </div>
+        <ul class="categorias">
+          {% for c in por_categoria %}
+            <li>
+              <span class="ponto" style="background: {{ c.cor }}"></span>
+              <span class="cat-nome">{{ c.categoria }}</span>
+              <span class="cat-valor">{{ c.total | brl }}</span>
+              <span class="cat-pct">{{ c.pct }}%</span>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% if maior %}
+        <p class="rodape-painel">Maior despesa: <strong>{{ maior.descricao }}</strong> ({{ maior.valor_cents | brl }})</p>
+      {% endif %}
+    {% else %}
+      <p class="vazio">Sem despesas neste mês. Quando você registrar uma, ela aparece aqui por categoria.</p>
+    {% endif %}
+  </section>
+</div>
+
+{# ---------- Lançamentos ---------- #}
+<section class="painel painel-tabela" aria-labelledby="lanc-titulo">
+  <div class="painel-topo">
+    <h2 id="lanc-titulo">Lançamentos
+      <small>{{ lancamentos | length }}{% if filtrando %} de {{ total_mes }}{% endif %}</small>
+    </h2>
+  </div>
+
+  <form class="filtros" method="get" action="{{ url_for('dashboard') }}">
+    <input type="hidden" name="mes" value="{{ mes }}">
+    <label class="busca">
+      <span class="so-leitor">Buscar pela descrição</span>
+      <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true"><circle cx="9" cy="9" r="5.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m13.5 13.5 3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      <input type="search" name="q" value="{{ filtros.q }}" placeholder="Buscar pela descrição">
+    </label>
+    <label>
+      <span class="so-leitor">Tipo</span>
+      <select name="tipo">
+        <option value="">Receitas e despesas</option>
+        <option value="receita" {{ 'selected' if filtros.tipo == 'receita' }}>Só receitas</option>
+        <option value="despesa" {{ 'selected' if filtros.tipo == 'despesa' }}>Só despesas</option>
+      </select>
+    </label>
+    <label>
+      <span class="so-leitor">Categoria</span>
+      <select name="categoria">
+        <option value="">Todas as categorias</option>
+        {% for c in categorias_filtro %}
+          <option value="{{ c }}" {{ 'selected' if filtros.categoria == c }}>{{ c }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button class="btn" type="submit">Filtrar</button>
+    {% if filtrando %}
+      <a class="link-limpar" href="{{ url_for('dashboard', mes=mes) }}">Limpar filtros</a>
+    {% endif %}
+  </form>
+
   {% if lancamentos %}
-    <ul class="historico">
-      {% for l in lancamentos %}
-        <li>
-          <div class="info">
-            <strong>{{ l.descricao }}</strong>
-            <small>{{ l.data | data_br }} · {{ l.categoria }}</small>
-          </div>
-          <div class="acoes">
-            <span class="{{ 'positivo' if l.tipo == 'receita' else 'negativo' }}">
-              {{ '+' if l.tipo == 'receita' else '-' }} {{ l.valor_cents | brl }}
-            </span>
-            <form method="post" action="{{ url_for('excluir_lancamento', lancamento_id=l.id) }}"
-                  onsubmit="return confirm('Excluir este lançamento?');">
-              <button class="excluir" type="submit" aria-label="Excluir">&times;</button>
-            </form>
-          </div>
-        </li>
-      {% endfor %}
-    </ul>
+    <table class="tabela">
+      <thead>
+        <tr>
+          <th scope="col">Data</th>
+          <th scope="col">Descrição</th>
+          <th scope="col">Categoria</th>
+          <th scope="col" class="direita">Valor</th>
+          <th scope="col"><span class="so-leitor">Ações</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for l in lancamentos %}
+          <tr>
+            <td class="col-data">{{ l.data | data_br }}</td>
+            <td class="col-desc">{{ l.descricao }}</td>
+            <td class="col-cat"><span class="pilula"><i class="ponto" style="background: {{ l.categoria | cor_categoria }}"></i>{{ l.categoria }}</span></td>
+            <td class="col-valor direita {{ 'positivo' if l.tipo == 'receita' else 'negativo' }}">
+              {{ '+' if l.tipo == 'receita' else '−' }} {{ l.valor_cents | brl }}
+            </td>
+            <td class="col-acoes">
+              <a class="icone" href="{{ url_for('editar_lancamento', lancamento_id=l.id) }}" aria-label="Editar {{ l.descricao }}" title="Editar">
+                <svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="m4 16 .7-3.3L13.5 3.9a1.5 1.5 0 0 1 2.1 0l.5.5a1.5 1.5 0 0 1 0 2.1l-8.8 8.8L4 16Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>
+              </a>
+              <form method="post" action="{{ url_for('excluir_lancamento', lancamento_id=l.id) }}"
+                    onsubmit="return confirm('Excluir este lançamento? Essa ação não pode ser desfeita.');">
+                <button class="icone perigo" type="submit" aria-label="Excluir {{ l.descricao }}" title="Excluir">
+                  <svg viewBox="0 0 20 20" width="17" height="17" aria-hidden="true"><path d="M4.5 6h11M8 6V4.5h4V6m-6 0 .6 9a1 1 0 0 0 1 .9h4.8a1 1 0 0 0 1-.9l.6-9" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% elif filtrando %}
+    <p class="vazio">Nenhum lançamento corresponde aos filtros. <a href="{{ url_for('dashboard', mes=mes) }}">Limpar filtros</a></p>
   {% else %}
-    <p class="vazio">Nenhum lançamento neste mês. <a href="{{ url_for('novo_lancamento') }}">Adicione o primeiro</a>.</p>
+    <p class="vazio">Nenhum lançamento em {{ mes_titulo }}. <a href="{{ url_for('novo_lancamento') }}">Registre o primeiro</a>.</p>
   {% endif %}
 </section>
 {% endblock %}

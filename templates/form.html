@@ -1,32 +1,42 @@
 {% extends "base.html" %}
-{% block titulo %}Novo lançamento · CastFin{% endblock %}
+{% block titulo %}{{ 'Editar lançamento' if editando else 'Novo lançamento' }} · CastFin{% endblock %}
+{% block acoes_topo %}
+  <a class="btn secundario" href="{{ url_for('dashboard') }}">Voltar ao painel</a>
+{% endblock %}
+
 {% block conteudo %}
-<section class="painel">
-  <h1>Novo lançamento</h1>
+<section class="painel formulario-painel">
+  <h1>{{ 'Editar lançamento' if editando else 'Novo lançamento' }}</h1>
   <form method="post" class="formulario">
-    <div class="tipo">
-      <label><input type="radio" name="tipo" value="despesa" {{ 'checked' if form.tipo != 'receita' }}> Despesa</label>
-      <label><input type="radio" name="tipo" value="receita" {{ 'checked' if form.tipo == 'receita' }}> Receita</label>
+    <fieldset class="tipo">
+      <legend class="so-leitor">Tipo</legend>
+      <label class="opcao despesa"><input type="radio" name="tipo" value="despesa" {{ 'checked' if form.tipo != 'receita' }}><span>Despesa</span></label>
+      <label class="opcao receita"><input type="radio" name="tipo" value="receita" {{ 'checked' if form.tipo == 'receita' }}><span>Receita</span></label>
+    </fieldset>
+
+    <label class="campo">Descrição
+      <input type="text" name="descricao" maxlength="120" required autofocus
+             placeholder="Ex.: Supermercado" value="{{ form.descricao or '' }}">
+    </label>
+
+    <div class="linha-2">
+      <label class="campo">Valor
+        <span class="prefixo"><i>R$</i>
+          <input type="text" name="valor" inputmode="decimal" placeholder="0,00" required
+                 value="{{ form.valor or '' }}">
+        </span>
+      </label>
+      <label class="campo">Data
+        <input type="date" name="data" required value="{{ form.data }}">
+      </label>
     </div>
 
-    <label>Descrição
-      <input type="text" name="descricao" maxlength="120" required value="{{ form.descricao or '' }}">
-    </label>
-
-    <label>Valor (R$)
-      <input type="text" name="valor" inputmode="decimal" placeholder="0,00" required value="{{ form.valor or '' }}">
-    </label>
-
-    <label>Categoria
+    <label class="campo">Categoria
       <select name="categoria" id="categoria" required></select>
     </label>
 
-    <label>Data
-      <input type="date" name="data" required value="{{ form.data }}">
-    </label>
-
     <div class="botoes">
-      <button class="btn" type="submit">Salvar</button>
+      <button class="btn" type="submit">{{ 'Salvar alterações' if editando else 'Salvar lançamento' }}</button>
       <a class="btn secundario" href="{{ url_for('dashboard') }}">Cancelar</a>
     </div>
   </form>
@@ -39,10 +49,10 @@
 
   function preencher() {
     const tipo = document.querySelector('input[name="tipo"]:checked').value;
+    const atual = select.value || selecionada;
     select.innerHTML = "";
     categorias[tipo].forEach(nome => {
-      const opt = new Option(nome, nome, false, nome === selecionada);
-      select.add(opt);
+      select.add(new Option(nome, nome, false, nome === atual));
     });
   }
   document.querySelectorAll('input[name="tipo"]').forEach(r => r.addEventListener("change", preencher));

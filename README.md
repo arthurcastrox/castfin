@@ -6,7 +6,7 @@
 
 O **CastFin** é uma aplicação web leve e intuitiva de controle financeiro pessoal, desenvolvida com foco em simplicidade usando **Python**, **Flask** e **SQLite**.
 
-> 🚧 **Projeto em desenvolvimento.** Este é um projeto de estudo, construído aos poucos. O restante do que está planejado pode mudar.
+> 🚧 **Projeto em desenvolvimento.** Este é um projeto de estudo, construído aos poucos. O que está planejado pode mudar.
 
 ---
 
@@ -27,15 +27,20 @@ O **CastFin** é uma aplicação web leve e intuitiva de controle financeiro pes
 ## ✨ Funcionalidades
 
 ### Atualmente implementadas (✅)
-- **Dashboard financeiro:** visualização consolidada de receitas, despesas e saldo do mês.
-- **Despesas por categoria:** acompanhamento percentual e visual com barras de progresso.
-- **Navegação temporal:** alterne entre os meses para conferir o histórico passado.
-- **Gestão de lançamentos:** cadastro e exclusão de receitas e despesas, com atualização automática do saldo.
+- **Saldo do mês em destaque:** quanto sobrou e quanto da receita virou despesa, com comparação com o mês anterior.
+- **Indicadores:** receitas, despesas, taxa de poupança e gasto médio por dia.
+- **Evolução dos últimos 6 meses:** receitas e despesas lado a lado; clique em um mês para abri-lo.
+- **Despesas por categoria:** gráfico em anel, valores, percentuais e maior despesa do mês.
+- **Gestão completa de lançamentos:** cadastrar, **editar** e excluir receitas e despesas.
+- **Busca e filtros:** por descrição, tipo (receita/despesa) e categoria.
+- **Exportação:** baixe os lançamentos do mês em CSV, que abre direto no Excel.
+- **Tema claro e escuro:** segue a configuração do seu sistema.
+- **Responsivo:** funciona no computador e no celular.
 
 ### Planejadas (⏳)
-- [ ] Edição de lançamentos existentes.
 - [ ] Orçamento limite por categoria.
 - [ ] Gráficos analíticos de fluxo de caixa anual.
+- [ ] Categorias editáveis pela interface (hoje ficam em ).
 
 ---
 
@@ -43,7 +48,7 @@ O **CastFin** é uma aplicação web leve e intuitiva de controle financeiro pes
 
 - **Backend:** Python 3 com [Flask](https://flask.palletsprojects.com/)
 - **Banco de dados:** SQLite (criado automaticamente)
-- **Frontend:** HTML5 e CSS3 responsivo, com componentes em cards
+- **Frontend:** HTML5 e CSS3 responsivo, sem frameworks JavaScript; gráficos feitos só com CSS
 
 ---
 
